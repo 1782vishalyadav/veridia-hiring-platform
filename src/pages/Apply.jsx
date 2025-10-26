@@ -42,6 +42,9 @@ export default function Apply() {
     }, 900);
   };
 
+  // standardized input classes
+  const inputCls = "mt-1 w-full rounded-md bg-custom-cream border border-slate-300 px-3 py-2 appearance-none placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500";
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-2xl font-semibold text-slate-900">Application Form</h1>
@@ -62,19 +65,44 @@ export default function Apply() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700">Full Name</label>
-              <input className="mt-1 w-full rounded-md border-slate-300 focus:border-blue-500 focus:ring-blue-500" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+              <input
+                type="text"
+                className={inputCls}
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700">Email</label>
-              <input type="email" className="mt-1 w-full rounded-md border-slate-300 focus:border-blue-500 focus:ring-blue-500" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+              <input
+                type="email"
+                className={inputCls}
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+              />
             </div>
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-slate-700">Phone</label>
-              <input className="mt-1 w-full rounded-md border-slate-300 focus:border-blue-500 focus:ring-blue-500" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
+              <input
+                type="tel"
+                className={inputCls}
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                required
+              />
             </div>
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-slate-700">Position</label>
-              <input className="mt-1 w-full rounded-md border-slate-300 focus:border-blue-500 focus:ring-blue-500" value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} placeholder="e.g. Senior Frontend Engineer" required />
+              <input
+                type="text"
+                className={inputCls}
+                value={form.position}
+                onChange={(e) => setForm({ ...form, position: e.target.value })}
+                placeholder="e.g. Senior Frontend Engineer"
+                required
+              />
             </div>
           </div>
         )}
@@ -83,11 +111,23 @@ export default function Apply() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700">Highest Education</label>
-              <input className="mt-1 w-full rounded-md border-slate-300 focus:border-blue-500 focus:ring-blue-500" value={form.education} onChange={(e) => setForm({ ...form, education: e.target.value })} required />
+              <input
+                type="text"
+                className={inputCls}
+                value={form.education}
+                onChange={(e) => setForm({ ...form, education: e.target.value })}
+                required
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700">University</label>
-              <input className="mt-1 w-full rounded-md border-slate-300 focus:border-blue-500 focus:ring-blue-500" value={form.university} onChange={(e) => setForm({ ...form, university: e.target.value })} required />
+              <input
+                type="text"
+                className={inputCls}
+                value={form.university}
+                onChange={(e) => setForm({ ...form, university: e.target.value })}
+                required
+              />
             </div>
           </div>
         )}
@@ -96,11 +136,24 @@ export default function Apply() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700">Years of Experience</label>
-              <input type="number" min="0" className="mt-1 w-full rounded-md border-slate-300 focus:border-blue-500 focus:ring-blue-500" value={form.experience} onChange={(e) => setForm({ ...form, experience: e.target.value })} required />
+              <input
+                type="number"
+                min="0"
+                className={inputCls}
+                value={form.experience}
+                onChange={(e) => setForm({ ...form, experience: e.target.value })}
+                required
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700">Recent Company</label>
-              <input className="mt-1 w-full rounded-md border-slate-300 focus:border-blue-500 focus:ring-blue-500" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} required />
+              <input
+                type="text"
+                className={inputCls}
+                value={form.company}
+                onChange={(e) => setForm({ ...form, company: e.target.value })}
+                required
+              />
             </div>
           </div>
         )}
@@ -108,7 +161,14 @@ export default function Apply() {
         {current === 3 && (
           <div>
             <label className="block text-sm font-medium text-slate-700">Resume Link (Google Drive / URL)</label>
-            <input type="url" className="mt-1 w-full rounded-md border-slate-300 focus:border-blue-500 focus:ring-blue-500" placeholder="https://..." value={form.resumeLink} onChange={(e) => setForm({ ...form, resumeLink: e.target.value })} required />
+            <input
+              type="url"
+              className={inputCls}
+              placeholder="https://..."
+              value={form.resumeLink}
+              onChange={(e) => setForm({ ...form, resumeLink: e.target.value })}
+              required
+            />
           </div>
         )}
 

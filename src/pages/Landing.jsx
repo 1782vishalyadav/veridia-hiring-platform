@@ -1,8 +1,8 @@
-import Spline from '@splinetool/react-spline';
 import { motion } from 'framer-motion';
 import { Briefcase, CheckCircle, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import jobs from '../data/jobs';
+import Spline from '@splinetool/react-spline';
 
 export default function Landing() {
   return (
@@ -38,7 +38,11 @@ export default function Landing() {
             </div>
           </div>
           <div className="h-[420px] rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur overflow-hidden shadow-sm">
-            <Spline scene="https://prod.spline.design/qQUip0dJPqrrPryE/scene.splinecode" style={{ width: '100%', height: '100%' }} />
+            <Spline
+              scene="https://prod.spline.design/qQUip0dJPqrrPryE/scene.splinecode"
+              style={{ width: '100%', height: '100%' }}
+              onError={(err) => console.error('Spline load error:', err)}
+            />
           </div>
         </div>
       </section>

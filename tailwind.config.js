@@ -46,6 +46,9 @@ export default {
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
       },
+      colors: {
+        'custom-cream': '#FCF9EA',
+      }
     },
   },
   plugins: [],

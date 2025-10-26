@@ -2,6 +2,8 @@
 
 A modern hiring platform built with React, Vite, and Tailwind CSS that streamlines the recruitment process.
 
+Live Link: https://1782vishalyadav.github.io/veridia-hiring-platform/
+
 ## 🚀 Features
 
 - User Authentication (Candidates & Admin)
