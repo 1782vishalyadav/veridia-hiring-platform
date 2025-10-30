@@ -15,6 +15,7 @@
   html {
     font-family: var(--font-sans);
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-tap-highlight-color: transparent;
   }
   
   body {
@@ -22,7 +23,13 @@
   }
 }
 
-/* Custom utility classes for shadcn/ui patterns */
+@layer components {
+  .input-field {
+    @apply w-full rounded-md bg-custom-cream border-slate-300 px-3 py-2;
+    @apply focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500;
+  }
+}
+
 @layer utilities {
   .animate-in {
     animation-name: animateIn;
