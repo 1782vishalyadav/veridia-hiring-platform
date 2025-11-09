@@ -3,12 +3,87 @@ import { Briefcase, CheckCircle, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import jobs from '../data/jobs';
 import Spline from '@splinetool/react-spline';
+import { useState, useCallback } from 'react';
 
 export default function Landing() {
+  // Add spline state + safe initializer for shader uniform f_blur
+  const [splineLoaded, setSplineLoaded] = useState(false);
+  const [splineError, setSplineError] = useState(false);
+
+  const handleSplineLoad = useCallback((splineApp) => {
+    setSplineLoaded(true);
+
+    // Try to safely initialize f_blur uniform if present to avoid shader warning
+    try {
+      const scene = splineApp?.scene || splineApp?._scene || splineApp?.app?.scene;
+      if (!scene) return;
+      scene.traverse((child) => {
+        try {
+          const mat = child?.material;
+          if (!mat) return;
+          // Some materials expose uniforms; if f_blur exists set a default
+          if (mat.uniforms && Object.prototype.hasOwnProperty.call(mat.uniforms, 'f_blur')) {
+            if (mat.uniforms.f_blur && typeof mat.uniforms.f_blur.value === 'undefined') {
+              mat.uniforms.f_blur.value = 0;
+            }
+            mat.needsUpdate = true;
+          }
+        } catch (e) {
+          // fail silently per-object
+        }
+      });
+    } catch (err) {
+      // safe fallback
+      // console.debug('Spline post-load init failed', err);
+    }
+  }, []);
+
+  // Framer variants for heading animation
+  const headingContainer = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.06,
+      },
+    },
+  };
+
+  const headingWord = {
+    hidden: { opacity: 0, y: 18, rotate: -4 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      rotate: 0,
+      transition: { type: 'spring', stiffness: 500, damping: 28 },
+    },
+  };
+
   return (
     <div className="overflow-x-hidden">
       {/* ===== HERO SECTION ===== */}
       <section className="relative overflow-hidden bg-gradient-to-b from-sky-50 via-white to-white">
+        {/* 
+          TODO: Page / Section background options (choose one)
+          
+          1) Full-page background image:
+             - Place image in public folder: public/images/bg-hero.jpg
+             - Replace the section class above with:
+               className="relative overflow-hidden bg-cover bg-center"
+             - And add inline style or Tailwind arbitrary class:
+               style={{ backgroundImage: "url('/veridia-hiring-platform/images/bg-hero.jpg')" }}
+             - OR use Tailwind arbitrary: className="bg-[url('/veridia-hiring-platform/images/bg-hero.jpg')] bg-cover bg-center"
+          
+          2) Section gradient overlay (keep existing blurs):
+             - Keep bg-gradient-to-b and adjust colors or opacity
+             - Add an overlay div inside section for tint:
+               <div className="absolute inset-0 bg-black/5 pointer-events-none" />
+          
+          3) Pattern or SVG background:
+             - Place SVG in src/assets and import it, then use in style or an <img> absolutely positioned.
+          
+          NOTE: Use public/ for static paths so Vite serves them without import when using url('/...').
+        */}
+
         {/* Background blurs */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <div className="absolute -top-32 right-[-10%] h-[400px] w-[400px] rounded-full bg-blue-500/10 blur-3xl sm:h-[500px] sm:w-[500px]" />
@@ -19,12 +94,21 @@ export default function Landing() {
           {/* Left Content */}
           <div className="text-center md:text-left">
             <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
               className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900"
+              variants={headingContainer}
+              initial="hidden"
+              animate="visible"
+              aria-label="Your next chapter starts at Veridia"
             >
-              Your next chapter starts at Veridia
+              {['Your', 'next', 'chapter', 'starts', 'at', 'Veridia'].map((word, i) => (
+                <motion.span
+                  key={word + i}
+                  className="inline-block mr-2"
+                  variants={headingWord}
+                >
+                  {word}
+                </motion.span>
+              ))}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 10 }}
@@ -53,17 +137,49 @@ export default function Landing() {
 
           {/* Right Visual */}
           <div className="h-[300px] sm:h-[380px] md:h-[420px] rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur overflow-hidden shadow-sm">
-            <Spline
-              scene="https://prod.spline.design/qQUip0dJPqrrPryE/scene.splinecode"
-              style={{ width: '100%', height: '100%' }}
-              onError={(err) => console.error('Spline load error:', err)}
-            />
+            {/*
+              TODO: Card-level background
+              
+              - To add a background behind the Spline card, modify this div:
+                * Add Tailwind classes: e.g. "bg-[url('/veridia-hiring-platform/images/card-bg.png')] bg-cover bg-center"
+                * Or use gradient: "bg-gradient-to-br from-white/90 via-white/60 to-white/30"
+                * Or add overlay layer inside this div:
+                  <div className="absolute inset-0 bg-[rgba(250,245,230,0.6)] pointer-events-none" />
+              
+              - If using an image from src, import it at top:
+                import cardBg from '../assets/card-bg.png';
+                then use style={{ backgroundImage: `url(${cardBg})` }}
+            */}
+            {!splineLoaded && !splineError && (
+              <div className="h-full grid place-items-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+              </div>
+            )}
+
+            {splineError ? (
+              <div className="h-full grid place-items-center text-sm text-slate-600">
+                3D preview unavailable
+              </div>
+            ) : (
+              <Spline
+                scene="https://prod.spline.design/qQUip0dJPqrrPryE/scene.splinecode"
+                style={{ width: '100%', height: '100%', opacity: splineLoaded ? 1 : 0 }}
+                onLoad={handleSplineLoad}
+                onError={() => setSplineError(true)}
+              />
+            )}
           </div>
         </div>
       </section>
 
       {/* ===== LIFE AT VERIDIA ===== */}
       <section className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12">
+        {/*
+          TODO: Section background
+          - To add subtle section background, change the section tag:
+            <section className="bg-slate-50"> ... </section>
+          - Or use a stripe/pattern: add a class with bg-[url('/...')] or an absolutely-positioned <div> as background.
+        */}
         <h2 className="text-2xl font-semibold text-slate-900 text-center md:text-left">
           Life at Veridia
         </h2>
@@ -103,6 +219,11 @@ export default function Landing() {
 
       {/* ===== OPEN POSITIONS ===== */}
       <section id="openings" className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12">
+        {/*
+          TODO: Page-level tiled/background for job list
+          - Wrap the jobs grid in a container with a background:
+            <div className="rounded-2xl bg-[url('/images/jobs-bg.png')] bg-repeat p-6"> ... </div>
+        */}
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
           <div className="text-center sm:text-left">
             <h2 className="text-2xl font-semibold text-slate-900">Open Positions</h2>

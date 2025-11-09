@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ToasterProvider from './components/Toaster';
@@ -12,14 +13,15 @@ import Apply from './pages/Apply';
 import CandidateDashboard from './pages/CandidateDashboard';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+
 import { getAuth } from './utils/storage';
 
 export default function App() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setReady(true), 200);
-    return () => clearTimeout(t);
+    const timeout = setTimeout(() => setReady(true), 2000);
+    return () => clearTimeout(timeout); // ✅ cleanup fix
   }, []);
 
   if (!ready) {
@@ -41,12 +43,14 @@ export default function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/apply" element={<Apply />} />
+
               <Route
                 path="/dashboard"
                 element={
                   getAuth()?.user ? <CandidateDashboard /> : <Navigate to="/login" replace />
                 }
               />
+
               <Route path="/admin" element={<AdminLogin />} />
               <Route
                 path="/admin/dashboard"
@@ -58,6 +62,7 @@ export default function App() {
                   )
                 }
               />
+
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>

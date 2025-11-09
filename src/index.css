@@ -11,15 +11,19 @@
     --font-ibm-plex: 'IBM Plex Sans', system-ui, sans-serif;
     --font-manrope: 'Manrope', system-ui, sans-serif;
   }
-  
+
   html {
+    /* ensure no default margin and stable scrollbar to avoid layout jump/extra spaces */
+    margin: 0;
+    scrollbar-gutter: stable both-edges;
     font-family: var(--font-sans);
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-tap-highlight-color: transparent;
   }
-  
+
   body {
     @apply antialiased;
+    margin: 0; /* explicit */
   }
 }
 
@@ -40,7 +44,7 @@
     --tw-enter-translate-x: initial;
     --tw-enter-translate-y: initial;
   }
-  
+
   .animate-out {
     animation-name: animateOut;
     animation-duration: 350ms;
@@ -51,3 +55,5 @@
     --tw-exit-translate-y: initial;
   }
 }
+
+
